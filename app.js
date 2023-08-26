@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const cookies = require('cookie-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
+
 const rateLimiter = require('./middlewares/rateLimiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const error = require('./middlewares/err');
@@ -21,12 +22,10 @@ mongoose.connect(DB_URL);
 app.use(helmet());
 app.disable('x-powered-by');
 app.use(cors({ origin: ['https://movies-explorer.irako.nomoredomainsicu.ru', 'http://movies-explorer.irako.nomoredomainsicu.ru', 'http://localhost:3001'], credentials: true }));
-app.use(requestLogger);
 app.use(rateLimiter);
+app.use(requestLogger);
 app.use(router);
 app.use(errorLogger);
 app.use(errors());
 app.use(error);
-app.listen(PORT, () => {
-  console.log(`Application is running on ${PORT}`);
-});
+app.listen(PORT);

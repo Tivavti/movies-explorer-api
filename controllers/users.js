@@ -5,7 +5,7 @@ const {
   OK,
   CREATED,
   DUPLICATE_KEY,
-} = require('../utils/status');
+} = require('../utils/constants');
 
 const UnauthorizedError = require('../utils/errors/unauthorizedError');
 const NotFoundError = require('../utils/errors/notFoundError');
@@ -97,6 +97,9 @@ function updateUser(req, res, next) {
       }
       if (err.name === 'DocumentNotFoundError') {
         return next(new NotFoundError('Пользователь не найден'));
+      }
+      if (err.code === DUPLICATE_KEY) {
+        next(new ConflictError('Такой пользователь уже существует'));
       }
       return next(err);
     });
